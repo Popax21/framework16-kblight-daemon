@@ -42,3 +42,16 @@ Default: `true`
 Log verbose events (e.g. all brightness changes).
 
 Default: `false`
+
+## Future Work
+
+The following features would be nice-to-have, however are currently impossible to implement for one reason or another:
+ - non-polling based input module brightness change detection
+   - QMK does not send any records when the backlight brightness changes, so this would require a firmware patch
+   - alternatively: remap brightness change keys from the built-in `QK_BACKLIGHT_STEP` to some unused keycode, and handle said keys on the CPU
+ - properly notify upower / desktop environments when the input module backlight brightness is changed (i.e. through a `QK_BACKLIGHT_STEP` key)
+   - upower listens on the kernel LEDs `brightness_hw_changed` attribute (if present)
+   - currently impossible because uleds does not support `LED_BRIGHT_HW_CHANGED` userspace LEDs
+ - support setting input module RGB hue (when available) through the kernel LED interface
+   - would allow for user control through the desktop environment (e.g. Kameleon for KDE)
+   - currently impossible because uleds does not support multi-color userspace LEDs
