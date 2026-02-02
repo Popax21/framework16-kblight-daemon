@@ -1,5 +1,5 @@
 {
-  description = "Daemon to manage the Framework 16's keyboard backlight";
+  description = "Daemon to manage / synchronize the Framework 16's keyboard backlight";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -41,9 +41,13 @@
         ];
       };
     }))
-    // {
+    // rec {
       overlays.default = final: prev: {
         fw16-kblight-daemon = final.callPackage nix/package.nix {craneLib = crane.mkLib final;};
+      };
+      nixosModules.default = {
+        imports = [./nix/nixos/module.nix];
+        nixpkgs.overlays = [overlays.default];
       };
     };
 }
