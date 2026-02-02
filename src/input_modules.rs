@@ -1,15 +1,15 @@
 use anyhow::{Context, Result, anyhow};
 use qmk_via_api::api::KeyboardApi;
 
-use crate::Config;
+use crate::{BrightnessDriver, Config};
 
 pub struct InputModule {
     pid: ModulePID,
     qmk_api: KeyboardApi,
 }
 
-impl InputModule {
-    pub fn check_brightness_change(&self, old_brightness: u8) -> Option<u8> {
+impl BrightnessDriver for InputModule {
+    fn check_brightness_change(&mut self, old_brightness: u8) -> Option<u8> {
         match self.qmk_api.get_backlight_brightness() {
             Ok(b) if b == old_brightness => None,
             Ok(b) => Some(b),
@@ -23,7 +23,7 @@ impl InputModule {
         }
     }
 
-    pub fn set_brightness(&self, brightness: u8) {
+    fn set_brightness(&mut self, brightness: u8) -> u8 {
         // set the actual background brightness
         if let Err(err) = self.qmk_api.set_backlight_brightness(brightness) {
             eprintln!(
@@ -46,6 +46,18 @@ impl InputModule {
                     "failed to set input module {} brightness: {err:#}",
                     self.pid
                 );
+            }
+        }
+
+        // our actual backlight brightness might be more coarse than an u8
+        match self.qmk_api.get_backlight_brightness() {
+            Ok(b) => b,
+            Err(err) => {
+                eprintln!(
+                    "failed to get input module {} brightness: {err:#}",
+                    self.pid
+                );
+                brightness
             }
         }
     }

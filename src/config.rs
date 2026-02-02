@@ -16,6 +16,8 @@ pub struct Config {
     /// for control using the Linux LED subsystem and its user (like desktop
     /// environments).
     pub expose_via_uleds: bool,
+    /// Log verbose events (e.g. all brightness changes).
+    pub verbose: bool,
 }
 
 impl Default for Config {
@@ -24,6 +26,7 @@ impl Default for Config {
             poll_interval_ms: 200,
             rgb_set_hsv_value_to_brightness: Default::default(),
             expose_via_uleds: true,
+            verbose: false,
         }
     }
 }

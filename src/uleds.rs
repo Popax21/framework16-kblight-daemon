@@ -6,6 +6,8 @@ use std::{
 
 use anyhow::{Context, Result};
 
+use crate::BrightnessDriver;
+
 pub struct UserspaceLED {
     file: File,
     sysfs_brightness_path: PathBuf,
@@ -55,8 +57,10 @@ impl UserspaceLED {
 
         Ok(uled)
     }
+}
 
-    pub fn check_brightness_change(&mut self, old_brightness: u8) -> Option<u8> {
+impl BrightnessDriver for UserspaceLED {
+    fn check_brightness_change(&mut self, old_brightness: u8) -> Option<u8> {
         let mut data: [u8; 4] = [0u8; 4];
         match self.file.read(&mut data) {
             Ok(4) => {
@@ -72,9 +76,10 @@ impl UserspaceLED {
         }
     }
 
-    pub fn set_brightness(&mut self, brightness: u8) {
+    fn set_brightness(&mut self, brightness: u8) -> u8 {
         if let Err(err) = std::fs::write(&self.sysfs_brightness_path, brightness.to_string()) {
             eprintln!("failed to update uleds sysfs brightness: {err:#}");
         }
+        brightness
     }
 }
