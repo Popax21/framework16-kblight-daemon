@@ -25,9 +25,10 @@
         rustfmt = craneLib.cargoFmt {
           src = ./.;
         };
-        clippy = craneLib.cargoClippy {
+        clippy = craneLib.cargoClippy rec {
           src = ./.;
-          inherit (flakePkg) cargoArtifacts buildInputs nativeBuildInputs;
+          inherit (flakePkg) cargoArtifacts;
+          inherit (cargoArtifacts) buildInputs nativeBuildInputs;
           cargoClippyExtraArgs = "--all-targets --all-features -- --deny warnings";
         };
       };
