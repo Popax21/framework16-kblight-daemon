@@ -36,3 +36,9 @@ Default: `true`
 Expose the keyboard's brightness via the uleds kernel module to allow for control using the Linux LED subsystem and its user (like desktop environments).
 
 Default: `true`
+
+### `verbose`
+
+Log verbose events (e.g. all brightness changes).
+
+Default: `false`
