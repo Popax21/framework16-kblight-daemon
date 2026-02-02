@@ -6,8 +6,7 @@ use serde::Deserialize;
 #[derive(Debug, Clone, Copy, Deserialize)]
 #[serde(default)]
 pub struct Config {
-    /// The polling interval used to check for backlight brightness changes;
-    /// zero to disable backlight brightness polling.
+    /// The polling interval used to check for backlight brightness changes.
     pub poll_interval_ms: u64,
     /// Set the HSV value of RGB-capable input modules to the backlight
     /// brightness, mimicking the behavior of the default backlight brightness
