@@ -13,7 +13,7 @@
     crane,
     ...
   }:
-    (flake-utils.lib.eachDefaultSystem (system: let
+    (flake-utils.lib.eachSystem (builtins.filter (nixpkgs.lib.hasInfix "linux") flake-utils.lib.defaultSystems) (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       craneLib = crane.mkLib pkgs;
       flakePkg = pkgs.callPackage nix/package.nix {inherit craneLib;};

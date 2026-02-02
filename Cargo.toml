@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.100"
+nix = { version = "0.31.1", features = ["fs"] }
 num_enum = "0.7.5"
 qmk-via-api = { version = "0.5.0", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }

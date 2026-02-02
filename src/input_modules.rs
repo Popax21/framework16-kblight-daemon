@@ -9,7 +9,7 @@ pub struct InputModule {
 }
 
 impl InputModule {
-    fn check_brightness_change(&self, old_brightness: u8) -> Option<u8> {
+    pub fn check_brightness_change(&self, old_brightness: u8) -> Option<u8> {
         match self.qmk_api.get_backlight_brightness() {
             Ok(b) if b == old_brightness => None,
             Ok(b) => Some(b),
@@ -23,7 +23,7 @@ impl InputModule {
         }
     }
 
-    fn set_brightness(&self, brightness: u8) {
+    pub fn set_brightness(&self, brightness: u8) {
         // set the actual background brightness
         if let Err(err) = self.qmk_api.set_backlight_brightness(brightness) {
             eprintln!(
@@ -104,32 +104,6 @@ impl InputModules {
             keyboard: keyboard.context("no keyboard input module found")?,
             extra,
         })
-    }
-
-    pub fn check_brightness_change(&self, old_brightness: u8) -> Option<u8> {
-        macro_rules! check {
-            ($b:expr) => {
-                if let Some(change) = $b {
-                    return Some(change);
-                }
-            };
-        }
-
-        check!(self.keyboard.check_brightness_change(old_brightness));
-
-        if let Some(extra) = &self.extra {
-            check!(extra.check_brightness_change(old_brightness));
-        }
-
-        None
-    }
-
-    pub fn set_brightness(&self, brightness: u8) {
-        self.keyboard.set_brightness(brightness);
-
-        if let Some(extra) = &self.extra {
-            extra.set_brightness(brightness);
-        }
     }
 }
 

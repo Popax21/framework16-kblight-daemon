@@ -13,6 +13,10 @@ pub struct Config {
     /// brightness, mimicking the behavior of the default backlight brightness
     /// step keys.
     pub rgb_set_hsv_value_to_brightness: bool,
+    /// Expose the keyboard's brightness via the uleds kernel module to allow
+    /// for control using the Linux LED subsystem and its user (like desktop
+    /// environments).
+    pub expose_via_uleds: bool,
 }
 
 impl Default for Config {
@@ -20,6 +24,7 @@ impl Default for Config {
         Self {
             poll_interval_ms: 200,
             rgb_set_hsv_value_to_brightness: Default::default(),
+            expose_via_uleds: true,
         }
     }
 }
