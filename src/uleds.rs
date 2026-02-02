@@ -67,7 +67,7 @@ impl BrightnessDriver for UserspaceLED {
                 let brightness = u32::from_ne_bytes(data) as u8;
                 (brightness != old_brightness).then_some(brightness)
             }
-            Ok(_) => unreachable!("uleds didn't read all 4 bytes"),
+            Ok(_) => panic!("uleds didn't read all 4 bytes"),
             Err(err) if err.kind() == ErrorKind::WouldBlock => None,
             Err(err) => {
                 eprintln!("failed to read uleds brightness change: {err:#}");

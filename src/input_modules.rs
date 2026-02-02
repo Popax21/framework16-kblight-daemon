@@ -14,49 +14,31 @@ impl BrightnessDriver for InputModule {
             Ok(b) if b == old_brightness => None,
             Ok(b) => Some(b),
             Err(err) => {
-                eprintln!(
-                    "failed to get input module {} brightness: {err:#}",
-                    self.pid
-                );
+                eprintln!("failed to get input module {self} brightness: {err:#}",);
                 None
             }
         }
     }
 
     fn set_brightness(&mut self, brightness: u8) -> u8 {
-        // set the actual background brightness
+        // set the actual backlight brightness
         if let Err(err) = self.qmk_api.set_backlight_brightness(brightness) {
-            eprintln!(
-                "failed to set input module {} brightness: {err:#}",
-                self.pid
-            );
+            eprintln!("failed to set input module {self} brightness: {err:#}");
         }
 
         // if this module has RGB and we should adjust the HSV value, do so
-        if self.pid.has_rgb() && Config::get().rgb_set_hsv_value_to_brightness {
-            if let Err(err) = self.qmk_api.set_rgb_matrix_brightness(brightness) {
-                eprintln!(
-                    "failed to set input module {} brightness: {err:#}",
-                    self.pid
-                );
-            }
-
-            if let Err(err) = self.qmk_api.set_backlight_brightness(brightness) {
-                eprintln!(
-                    "failed to set input module {} brightness: {err:#}",
-                    self.pid
-                );
-            }
+        if self.pid.has_rgb()
+            && Config::get().rgb_set_hsv_value_to_brightness
+            && let Err(err) = self.qmk_api.set_rgb_matrix_brightness(brightness)
+        {
+            eprintln!("failed to set input module {self} HSV value: {err:#}");
         }
 
         // our actual backlight brightness might be more coarse than an u8
         match self.qmk_api.get_backlight_brightness() {
             Ok(b) => b,
             Err(err) => {
-                eprintln!(
-                    "failed to get input module {} brightness: {err:#}",
-                    self.pid
-                );
+                eprintln!("failed to get input module {self} brightness: {err:#}",);
                 brightness
             }
         }
@@ -93,7 +75,7 @@ impl InputModules {
                 continue;
             };
 
-            // open the device
+            // open the input module's QMK/VIA device
             let qmk_api =
                 KeyboardApi::new(FRAMEWORK_VID, pid as u16, dev.usage_page).map_err(|e| {
                     anyhow!("{e}")
